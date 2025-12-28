@@ -217,8 +217,8 @@ After running the seed script:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/LeoVaris/test-app.git
-cd test-app
+git clone https://github.com/varisleo/yeet-app.git
+cd yeet-app
 ```
 
 2. Start the application:
