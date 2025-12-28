@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yeet-casino-api
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE=yeet_casino
+      - ADMIN_API_KEY=admin-secret-key
+      - SERVICE_API_KEY=service-secret-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - yeet-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: yeet-casino-db
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=yeet_casino
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d yeet_casino']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - yeet-network
+    restart: unless-stopped
+
+networks:
+  yeet-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
